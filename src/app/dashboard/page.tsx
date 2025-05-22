@@ -21,6 +21,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import Image from 'next/image';
 
 // Dummy data for demonstration
 const stats = [
@@ -357,6 +358,16 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="relative h-48 w-full">
+        <Image
+          src="/dashboard-bg.jpg"
+          alt="Dashboard Background"
+          fill
+          className="object-cover"
+          priority
+        />
       </div>
     </div>
   );

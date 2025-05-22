@@ -3,15 +3,15 @@
 import { motion } from "motion/react";
 import { useState } from "react";
 import {
-  IconPlus,
   IconSearch,
+  IconPlus,
   IconFilter,
+  IconX,
   IconEdit,
   IconTrash,
-  IconPackage,
   IconCategory,
-  IconX,
 } from "@tabler/icons-react";
+import Image from 'next/image';
 
 // Dummy data for demonstration
 const inventoryItems = [
@@ -283,9 +283,11 @@ export default function InventoryPage() {
                   <td className="whitespace-nowrap px-6 py-4">
                     <div className="flex items-center">
                       <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
-                        <img
+                        <Image
                           src={item.image}
                           alt={item.name}
+                          width={48}
+                          height={48}
                           className="h-full w-full object-cover"
                         />
                       </div>
