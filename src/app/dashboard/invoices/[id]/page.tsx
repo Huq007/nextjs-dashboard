@@ -7,7 +7,6 @@ import {
   IconPrinter,
   IconArrowLeft,
   IconCalendar,
-  IconUser,
   IconBuilding,
   IconMail,
   IconPhone,

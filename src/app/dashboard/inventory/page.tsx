@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 import {
   IconSearch,
@@ -10,11 +10,24 @@ import {
   IconEdit,
   IconTrash,
   IconCategory,
+  IconMenu2,
 } from "@tabler/icons-react";
 import Image from 'next/image';
 
+// Add interfaces for type safety
+interface InventoryItem {
+  id: string;
+  name: string;
+  sku: string;
+  category: string;
+  stock: number;
+  price: number;
+  status: "In Stock" | "Low Stock" | "Out of Stock";
+  image: string;
+}
+
 // Dummy data for demonstration
-const inventoryItems = [
+const inventoryItems: InventoryItem[] = [
   {
     id: "INV-001",
     name: "Laptop Pro 15",
@@ -182,6 +195,73 @@ const inventoryItems = [
   }
 ];
 
+// Slide Drawer Component
+function SlideDrawer({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop with blur and fade effect */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            onClick={onClose}
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]"
+          />
+          
+          {/* Drawer with enhanced animations */}
+          <motion.div
+            initial={{ x: "100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "100%", opacity: 0 }}
+            transition={{
+              type: "spring",
+              damping: 25,
+              stiffness: 200,
+              mass: 0.5,
+            }}
+            className="fixed right-0 top-0 z-50 h-full w-full max-w-md overflow-hidden bg-white shadow-2xl dark:bg-neutral-800"
+          >
+            {/* Drawer Header with gradient border */}
+            <div className="relative border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 dark:border-neutral-700 dark:from-neutral-900 dark:to-neutral-800">
+              <div className="flex items-center justify-between">
+                <motion.h2 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-xl font-semibold text-gray-900 dark:text-white"
+                >
+                  Inventory Details
+                </motion.h2>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={onClose}
+                  className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-500 dark:text-gray-500 dark:hover:bg-neutral-700 dark:hover:text-gray-400"
+                >
+                  <IconX className="h-6 w-6" />
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Drawer Content with scroll and fade effect */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="h-[calc(100%-80px)] overflow-y-auto p-6"
+            >
+              {children}
+            </motion.div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
 // Add Item Modal Component
 function AddItemModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [formData, setFormData] = useState({
@@ -316,6 +396,8 @@ function AddItemModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
 export default function InventoryPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -360,6 +442,11 @@ export default function InventoryPage() {
     return pages;
   };
 
+  const handleItemClick = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsDrawerOpen(true);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -371,15 +458,26 @@ export default function InventoryPage() {
             Manage your product inventory and stock levels
           </p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setIsAddModalOpen(true)}
-          className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-        >
-          <IconPlus className="mr-2 h-4 w-4" />
-          Add Item
-        </motion.button>
+        <div className="flex gap-2">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setIsDrawerOpen(true)}
+            className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+          >
+            <IconMenu2 className="mr-2 h-4 w-4" />
+            View Details
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setIsAddModalOpen(true)}
+            className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+          >
+            <IconPlus className="mr-2 h-4 w-4" />
+            Add Item
+          </motion.button>
+        </div>
       </div>
 
       {/* Search and Filter Bar */}
@@ -437,7 +535,11 @@ export default function InventoryPage() {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
               {currentItems.map((item) => (
-                <tr key={item.id}>
+                <tr 
+                  key={item.id}
+                  onClick={() => handleItemClick(item)}
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-neutral-700"
+                >
                   <td className="whitespace-nowrap px-6 py-4">
                     <div className="flex items-center">
                       <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
@@ -580,6 +682,113 @@ export default function InventoryPage() {
           </div>
         </div>
       </div>
+
+      {/* Slide Drawer */}
+      <SlideDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+        {selectedItem && (
+          <div className="space-y-8">
+            {/* Product Image with hover effect */}
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="relative overflow-hidden rounded-xl bg-gray-100 dark:bg-neutral-700"
+            >
+              <Image
+                src={selectedItem.image}
+                alt={selectedItem.name}
+                width={400}
+                height={400}
+                className="h-64 w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-6">
+                <motion.h3 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-2xl font-bold text-white"
+                >
+                  {selectedItem.name}
+                </motion.h3>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-1 text-sm text-gray-200"
+                >
+                  {selectedItem.id}
+                </motion.p>
+              </div>
+            </motion.div>
+
+            {/* Details Grid with staggered animation */}
+            <div className="grid grid-cols-2 gap-6">
+              {[
+                { label: "SKU", value: selectedItem.sku },
+                { label: "Category", value: selectedItem.category },
+                { label: "Stock", value: selectedItem.stock },
+                { label: "Price", value: `$${selectedItem.price.toFixed(2)}` },
+              ].map((item, index) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1 }}
+                  className="rounded-lg border border-gray-200 p-4 dark:border-neutral-700"
+                >
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+                    {item.value}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Status Badge with animation */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1 }}
+              className="flex justify-center"
+            >
+              <span
+                className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold ${
+                  selectedItem.status === "In Stock"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                    : selectedItem.status === "Low Stock"
+                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                }`}
+              >
+                {selectedItem.status}
+              </span>
+            </motion.div>
+
+            {/* Action Buttons with hover effects */}
+            <div className="flex justify-end space-x-4 pt-6">
+              <motion.button
+                whileHover={{ scale: 1.02, backgroundColor: "#f3f4f6" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  setIsDrawerOpen(false);
+                  setIsAddModalOpen(true);
+                }}
+                className="rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-neutral-700 dark:text-gray-300 dark:hover:bg-neutral-700"
+              >
+                Edit Item
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02, backgroundColor: "#dc2626" }}
+                whileTap={{ scale: 0.98 }}
+                className="rounded-lg bg-red-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
+              >
+                Delete Item
+              </motion.button>
+            </div>
+          </div>
+        )}
+      </SlideDrawer>
 
       {/* Add Item Modal */}
       <AddItemModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />

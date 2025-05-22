@@ -5,8 +5,6 @@ import {
   IconPackage,
   IconTruck,
   IconAlertCircle,
-  IconTrendingUp,
-  IconTrendingDown,
   IconCurrencyDollar,
   IconUsers,
   IconShoppingCart,
@@ -172,7 +170,6 @@ const topSellingItems = [
 ];
 
 export default function DashboardPage() {
-  const { theme } = useTheme();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const totalPages = Math.ceil(recentItems.length / itemsPerPage);

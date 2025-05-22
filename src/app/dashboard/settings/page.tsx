@@ -1,57 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
-  IconSettings,
-  IconUserCircle,
-  IconBuilding,
-  IconBellRinging,
-  IconLock,
-  IconPalette,
-  IconLanguage,
-  IconCurrencyDollar,
   IconSun,
   IconMoon,
 } from "@tabler/icons-react";
 import { useTheme } from "../../providers";
-
-const settingsSections = [
-  {
-    title: "Profile Settings",
-    icon: IconUserCircle,
-    description: "Manage your account profile and personal information",
-  },
-  {
-    title: "Company Settings",
-    icon: IconBuilding,
-    description: "Configure your company details and preferences",
-  },
-  {
-    title: "Notification Settings",
-    icon: IconBellRinging,
-    description: "Customize your notification preferences",
-  },
-  {
-    title: "Security Settings",
-    icon: IconLock,
-    description: "Manage your security preferences and password",
-  },
-  {
-    title: "Appearance",
-    icon: IconPalette,
-    description: "Customize the look and feel of your dashboard",
-  },
-  {
-    title: "Language & Region",
-    icon: IconLanguage,
-    description: "Set your preferred language and regional settings",
-  },
-  {
-    title: "Currency & Units",
-    icon: IconCurrencyDollar,
-    description: "Configure currency and measurement units",
-  },
-];
 
 export default function SettingsPage() {
   const { theme, toggleTheme } = useTheme();
