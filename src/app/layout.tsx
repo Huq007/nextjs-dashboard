@@ -1,27 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "./providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const montserrat = Montserrat({
+const montserrat = Montserrat({ 
   subsets: ["latin"],
   display: "swap",
   variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
-  title: "Inventory Management System",
-  description: "A modern inventory management system",
+  title: "Dashboard",
+  description: "A modern dashboard application",
 };
 
 export default function RootLayout({
@@ -30,8 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}>
-      <body className="font-montserrat antialiased">{children}</body>
+    <html lang="en" suppressHydrationWarning className={montserrat.variable}>
+      <body className="font-montserrat">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }
