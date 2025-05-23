@@ -1,210 +1,282 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useState } from "react";
+import Image from "next/image";
 import {
-  IconPlus,
   IconSearch,
   IconFilter,
+  IconPlus,
   IconBuilding,
-  IconPhone,
   IconMail,
-  IconEdit,
-  IconTrash,
+  IconPhone,
+  IconMapPin,
+  IconPackage,
+  IconTruck,
+  IconStar,
 } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { DataTable, Column } from "@/components/ui/data-table";
 
-// Dummy data for demonstration
-const suppliers = [
+interface Supplier {
+  id: number;
+  name: string;
+  logo: string;
+  email: string;
+  phone: string;
+  address: string;
+  category: string;
+  rating: number;
+  status: "Active" | "Inactive";
+  lastOrder: string;
+  totalOrders: number;
+}
+
+// Sample supplier data
+const suppliers: Supplier[] = [
   {
-    id: "SUP-001",
-    name: "Global Electronics Inc.",
-    contact: "John Smith",
-    email: "john@globalelectronics.com",
+    id: 1,
+    name: "Tech Solutions Inc.",
+    logo: "https://randomuser.me/api/portraits/men/32.jpg",
+    email: "contact@techsolutions.com",
     phone: "+1 (555) 123-4567",
+    address: "123 Business Ave, San Francisco, CA",
+    category: "Electronics",
+    rating: 4.5,
     status: "Active",
-    items: 45,
+    lastOrder: "2024-03-15",
+    totalOrders: 45,
   },
   {
-    id: "SUP-002",
-    name: "Tech Solutions Ltd.",
-    contact: "Sarah Johnson",
-    email: "sarah@techsolutions.com",
-    phone: "+1 (555) 234-5678",
+    id: 2,
+    name: "Global Electronics",
+    logo: "https://randomuser.me/api/portraits/women/44.jpg",
+    email: "sales@globalelectronics.com",
+    phone: "+1 (555) 987-6543",
+    address: "456 Tech Street, New York, NY",
+    category: "Electronics",
+    rating: 4.2,
     status: "Active",
-    items: 32,
+    lastOrder: "2024-03-10",
+    totalOrders: 32,
   },
   {
-    id: "SUP-003",
-    name: "Industrial Parts Co.",
-    contact: "Mike Brown",
-    email: "mike@industrialparts.com",
-    phone: "+1 (555) 345-6789",
-    status: "Inactive",
-    items: 18,
-  },
-  {
-    id: "SUP-004",
-    name: "Quality Components",
-    contact: "Lisa Wilson",
-    email: "lisa@qualitycomponents.com",
+    id: 3,
+    name: "Office Supplies Co.",
+    logo: "https://randomuser.me/api/portraits/men/67.jpg",
+    email: "info@officesupplies.com",
     phone: "+1 (555) 456-7890",
-    status: "Active",
-    items: 27,
+    address: "789 Corporate Blvd, Chicago, IL",
+    category: "Office Supplies",
+    rating: 4.0,
+    status: "Inactive",
+    lastOrder: "2024-02-28",
+    totalOrders: 18,
   },
   {
-    id: "SUP-005",
-    name: "Advanced Materials",
-    contact: "David Lee",
-    email: "david@advancedmaterials.com",
-    phone: "+1 (555) 567-8901",
+    id: 4,
+    name: "Furniture World",
+    logo: "https://randomuser.me/api/portraits/women/68.jpg",
+    email: "contact@furnitureworld.com",
+    phone: "+1 (555) 234-5678",
+    address: "321 Design Street, Los Angeles, CA",
+    category: "Furniture",
+    rating: 4.8,
     status: "Active",
-    items: 39,
+    lastOrder: "2024-03-12",
+    totalOrders: 27,
+  },
+  {
+    id: 5,
+    name: "Digital Solutions",
+    logo: "https://randomuser.me/api/portraits/men/75.jpg",
+    email: "sales@digitalsolutions.com",
+    phone: "+1 (555) 345-6789",
+    address: "789 Innovation Ave, Seattle, WA",
+    category: "Software",
+    rating: 4.6,
+    status: "Active",
+    lastOrder: "2024-03-14",
+    totalOrders: 39,
   },
 ];
 
 export default function SuppliersPage() {
-  return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Suppliers
-          </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Manage your supplier relationships and inventory
-          </p>
-        </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-        >
-          <IconPlus className="mr-2 h-4 w-4" />
-          Add Supplier
-        </motion.button>
-      </div>
+  const [searchQuery, setSearchQuery] = useState("");
 
-      {/* Search and Filter Bar */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1">
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <IconSearch className="h-5 w-5 text-gray-400" />
+  const columns: Column<Supplier>[] = [
+    {
+      header: "Supplier",
+      accessorKey: "name",
+      cell: (supplier) => (
+        <div className="flex items-center">
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-700 shadow-sm">
+            <Image
+              src={supplier.logo}
+              alt={supplier.name}
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
           </div>
-          <input
-            type="text"
-            className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-gray-400"
-            placeholder="Search suppliers..."
-          />
+          <div className="ml-4">
+            <div className="text-sm font-medium text-gray-900 dark:text-white">
+              {supplier.name}
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              {supplier.category}
+            </div>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
-          >
-            <IconFilter className="mr-2 h-4 w-4" />
-            Filter
-          </motion.button>
+      ),
+    },
+    {
+      header: "Contact",
+      accessorKey: "email",
+      cell: (supplier) => (
+        <div className="space-y-1">
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <IconMail className="w-4 h-4 mr-2" />
+            {supplier.email}
+          </div>
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <IconPhone className="w-4 h-4 mr-2" />
+            {supplier.phone}
+          </div>
         </div>
-      </div>
+      ),
+    },
+    {
+      header: "Location",
+      accessorKey: "address",
+      cell: (supplier) => (
+        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+          <IconMapPin className="w-4 h-4 mr-2" />
+          {supplier.address}
+        </div>
+      ),
+    },
+    {
+      header: "Rating",
+      accessorKey: "rating",
+      cell: (supplier) => (
+        <div className="flex items-center">
+          <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+              <IconStar
+                key={i}
+                className={`w-4 h-4 ${
+                  i < Math.floor(supplier.rating)
+                    ? "text-yellow-400"
+                    : "text-gray-300 dark:text-gray-600"
+                }`}
+                fill={i < Math.floor(supplier.rating) ? "currentColor" : "none"}
+              />
+            ))}
+          </div>
+          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+            {supplier.rating}
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: "Orders",
+      accessorKey: "totalOrders",
+      cell: (supplier) => (
+        <div className="space-y-1">
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <IconPackage className="w-4 h-4 mr-2" />
+            Total: {supplier.totalOrders}
+          </div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Last: {supplier.lastOrder}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (supplier) => (
+        <span
+          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            supplier.status === "Active"
+              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+              : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+          }`}
+        >
+          {supplier.status}
+        </span>
+      ),
+    },
+  ];
 
-      {/* Suppliers Table */}
-      <div className="rounded-lg bg-white shadow-sm dark:bg-neutral-800">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-neutral-900">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Supplier
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Contact
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Contact Info
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Items
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-              {suppliers.map((supplier) => (
-                <tr key={supplier.id}>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="h-10 w-10 flex-shrink-0">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-700">
-                          <IconBuilding className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                        </div>
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {supplier.name}
-                        </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {supplier.id}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    {supplier.contact}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                        <IconMail className="mr-2 h-4 w-4" />
-                        {supplier.email}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                        <IconPhone className="mr-2 h-4 w-4" />
-                        {supplier.phone}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm">
-                    <span
-                      className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                        supplier.status === "Active"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                      }`}
-                    >
-                      {supplier.status}
-                    </span>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    {supplier.items}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
-                    <div className="flex justify-end space-x-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
-                      >
-                        <IconEdit className="h-5 w-5" />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
-                      >
-                        <IconTrash className="h-5 w-5" />
-                      </motion.button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Suppliers
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              Manage your supplier relationships and orders
+            </p>
+          </div>
+          <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200">
+            <IconPlus className="w-5 h-5 mr-2" />
+            Add Supplier
+          </Button>
         </div>
+
+        {/* Search and Filter Section */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <IconSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Input
+              placeholder="Search suppliers..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-white/50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400"
+            />
+          </div>
+          <Button variant="outline" className="flex items-center gap-2 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <IconFilter size={20} />
+            Filter
+          </Button>
+        </div>
+
+        {/* Suppliers Table */}
+        <DataTable
+          columns={columns}
+          data={suppliers}
+          onEdit={(supplier) => {
+            console.log("Edit supplier:", supplier);
+          }}
+          onDelete={(supplier) => {
+            console.log("Delete supplier:", supplier);
+          }}
+          actions={[
+            {
+              label: "View Details",
+              icon: <IconBuilding className="w-4 h-4 mr-2" />,
+              onClick: (supplier) => {
+                console.log("View supplier details:", supplier);
+              },
+              className: "text-blue-600 dark:text-blue-400",
+            },
+            {
+              label: "Place Order",
+              icon: <IconTruck className="w-4 h-4 mr-2" />,
+              onClick: (supplier) => {
+                console.log("Place order with:", supplier);
+              },
+              className: "text-green-600 dark:text-green-400",
+            },
+          ]}
+        />
       </div>
     </div>
   );
