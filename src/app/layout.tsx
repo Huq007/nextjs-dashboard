@@ -10,8 +10,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "A modern dashboard application",
+  title: "Inventory Pro - Enterprise Management System",
+  description: "A modern inventory management system for enterprises",
 };
 
 export default function RootLayout({
