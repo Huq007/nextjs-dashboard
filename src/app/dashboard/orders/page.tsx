@@ -17,8 +17,39 @@ import {
 } from "@tabler/icons-react";
 import Image from 'next/image';
 
+interface Order {
+  id: string;
+  date: string;
+  customer: string;
+  items: {
+    id: string;
+    name: string;
+    quantity: number;
+    price: number;
+    image: string;
+  }[];
+  status: "Delivered" | "In Transit" | "Processing";
+  total: number;
+  shipping: {
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+    method: string;
+    tracking: string;
+  };
+  payment: {
+    method: string;
+    cardType?: string;
+    last4?: string;
+    status: string;
+    date: string;
+  };
+}
+
 // Dummy data for orders
-const orders = [
+const orders: Order[] = [
   {
     id: "ORD-001",
     date: "2024-03-15",
@@ -191,8 +222,8 @@ function SlideDrawer({ isOpen, onClose, children }: { isOpen: boolean; onClose: 
 
 export default function OrdersPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [currentPage] = useState(1);
   const itemsPerPage = 10;
 
   // Calculate pagination
@@ -200,7 +231,7 @@ export default function OrdersPage() {
   const endIndex = startIndex + itemsPerPage;
   const currentOrders = orders.slice(startIndex, endIndex);
 
-  const handleOrderClick = (order: any) => {
+  const handleOrderClick = (order: Order) => {
     setSelectedOrder(order);
     setIsDrawerOpen(true);
   };
@@ -391,7 +422,7 @@ export default function OrdersPage() {
                 Order Items
               </h4>
               <div className="space-y-4">
-                {selectedOrder.items.map((item: any, index: number) => (
+                {selectedOrder.items.map((item: Order['items'][number], index: number) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, x: -20 }}

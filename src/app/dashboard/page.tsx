@@ -9,7 +9,6 @@ import {
   IconUsers,
   IconShoppingCart,
 } from "@tabler/icons-react";
-import { useTheme } from "../providers";
 import { cn } from "../lib/utils";
 import {
   AreaChart,
