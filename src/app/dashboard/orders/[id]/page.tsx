@@ -1,6 +1,5 @@
-"use client";
-
 import { motion } from "motion/react";
+
 import {
   IconArrowLeft,
   IconPackage,
@@ -12,60 +11,164 @@ import {
   IconPrinter,
   IconDownload,
 } from "@tabler/icons-react";
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
+
+interface Order {
+  id: string;
+  date: string;
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  items: {
+    id: string;
+    name: string;
+    quantity: number;
+    price: number;
+    image: string;
+  }[];
+  status: string;
+  shipping: {
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+    method: string;
+    tracking: string;
+  };
+  payment: {
+    method: string;
+    cardType: string;
+    last4: string;
+    status: string;
+    date: string;
+  };
+  summary: {
+    subtotal: number;
+    tax: number;
+    shipping: number;
+    total: number;
+  };
+}
 
 // Dummy data for demonstration
-const orderDetails = {
-  id: "ORD-001",
-  date: "2024-03-15",
-  customer: {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567"
-  },
-  items: [
-    {
-      id: "ITEM-001",
-      name: "Laptop Pro 15",
-      quantity: 2,
-      price: 1200.00,
-      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wfGVufDB8fDB8fHww"
+const orders: Order[] = [
+  {
+    id: "ORD-001",
+    date: "2024-03-15",
+    customer: {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      phone: "+1 (555) 123-4567",
     },
-    {
-      id: "ITEM-002",
-      name: "Mechanical Keyboard",
-      quantity: 1,
-      price: 85.00,
-      image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a2V5Ym9hcmR8ZW58MHx8MHx8fDA%3D"
-    }
-  ],
-  status: "Delivered",
-  shipping: {
-    address: "123 Main Street, Suite 100",
-    city: "San Francisco",
-    state: "CA",
-    zip: "94105",
-    country: "USA",
-    method: "Express Delivery",
-    tracking: "1Z999AA10123456789"
+    items: [
+      {
+        id: "ITEM-001",
+        name: "Laptop Pro 15",
+        quantity: 2,
+        price: 1200.0,
+        image:
+          "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wfGVufDB8fDB8fHww",
+      },
+      {
+        id: "ITEM-002",
+        name: "Mechanical Keyboard",
+        quantity: 1,
+        price: 85.0,
+        image:
+          "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a2V5Ym9hcmR8ZW58MHx8MHx8fDA%3D",
+      },
+    ],
+    status: "Delivered",
+    shipping: {
+      address: "123 Main Street, Suite 100",
+      city: "San Francisco",
+      state: "CA",
+      zip: "94105",
+      country: "USA",
+      method: "Express Delivery",
+      tracking: "1Z999AA10123456789",
+    },
+    payment: {
+      method: "Credit Card",
+      cardType: "Visa",
+      last4: "4242",
+      status: "Paid",
+      date: "2024-03-15",
+    },
+    summary: {
+      subtotal: 2485.0,
+      tax: 248.5,
+      shipping: 25.0,
+      total: 2758.5,
+    },
   },
-  payment: {
-    method: "Credit Card",
-    cardType: "Visa",
-    last4: "4242",
-    status: "Paid",
-    date: "2024-03-15"
+  {
+    id: "ORD-002",
+    date: "2024-03-15",
+    customer: {
+      name: "Jane Doe",
+      email: "jane.doe@example.com",
+      phone: "+1 (555) 123-4567",
+    },
+    items: [
+      {
+        id: "ITEM-003",
+        name: "Desktop Computer",
+        quantity: 1,
+        price: 1500.0,
+        image:
+          "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVza3RvcHxlbnwwfHwwfHw%3D",
+      },
+      {
+        id: "ITEM-004",
+        name: "Wireless Mouse",
+        quantity: 2,
+        price: 25.0,
+        image:
+          "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW91bnRhaW58ZW58MHx8MHx8fDA%3D",
+      },
+    ],
+    status: "Delivered",
+    shipping: {
+      address: "456 Elm Street, Suite 200",
+      city: "San Francisco",
+      state: "CA",
+      zip: "94105",
+      country: "USA",
+      method: "Express Delivery",
+      tracking: "1Z999AA10123456789",
+    },
+    payment: {
+      method: "Credit Card",
+      cardType: "Mastercard",
+      last4: "5432",
+      status: "Paid",
+      date: "2024-03-15",
+    },
+    summary: {
+      subtotal: 1525.0,
+      tax: 152.5,
+      shipping: 25.0,
+      total: 1697.5,
+    },
   },
-  summary: {
-    subtotal: 2485.00,
-    tax: 248.50,
-    shipping: 25.00,
-    total: 2758.50
-  }
-};
+];
 
-export default function OrderDetailsPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function OrderDetailsPage({ params }: PageProps) {
+  const { id } = await params;
+  const orderDetails = orders.find((order) => order.id === id) || orders[0];
+
   return (
     <div className="space-y-8">
       {/* Header with back button */}
@@ -121,8 +224,12 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
               <IconPackage className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Order Status</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{orderDetails.status}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Order Status
+              </p>
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                {orderDetails.status}
+              </p>
             </div>
           </div>
         </motion.div>
@@ -138,8 +245,12 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
               <IconCalendar className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Order Date</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{orderDetails.date}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Order Date
+              </p>
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                {orderDetails.date}
+              </p>
             </div>
           </div>
         </motion.div>
@@ -155,8 +266,12 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
               <IconUser className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Customer</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{orderDetails.customer.name}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Customer
+              </p>
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                {orderDetails.customer.name}
+              </p>
             </div>
           </div>
         </motion.div>
@@ -169,34 +284,42 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
         transition={{ delay: 0.3 }}
         className="rounded-lg border border-gray-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800"
       >
-        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Order Items</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Order Items
+        </h2>
         <div className="space-y-4">
-          {orderDetails.items.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 + index * 0.1 }}
-              className="flex items-center space-x-4 rounded-lg border border-gray-200 p-4 dark:border-neutral-700"
-            >
-              <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={64}
-                  height={64}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900 dark:text-white">{item.name}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Qty: {item.quantity}</p>
-              </div>
-              <p className="font-medium text-gray-900 dark:text-white">
-                ${(item.price * item.quantity).toFixed(2)}
-              </p>
-            </motion.div>
-          ))}
+          {orderDetails.items.map(
+            (item: Order["items"][number], index: number) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                className="flex items-center space-x-4 rounded-lg border border-gray-200 p-4 dark:border-neutral-700"
+              >
+                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={64}
+                    height={64}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {item.name}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Qty: {item.quantity}
+                  </p>
+                </div>
+                <p className="font-medium text-gray-900 dark:text-white">
+                  ${(item.price * item.quantity).toFixed(2)}
+                </p>
+              </motion.div>
+            )
+          )}
         </div>
       </motion.div>
 
@@ -209,23 +332,34 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
           transition={{ delay: 0.5 }}
           className="rounded-lg border border-gray-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800"
         >
-          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Shipping Information</h2>
+          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+            Shipping Information
+          </h2>
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
               <IconMapPin className="mt-1 h-5 w-5 text-gray-400" />
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{orderDetails.shipping.address}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {orderDetails.shipping.city}, {orderDetails.shipping.state} {orderDetails.shipping.zip}
+                  {orderDetails.shipping.address}
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{orderDetails.shipping.country}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {orderDetails.shipping.city}, {orderDetails.shipping.state}{" "}
+                  {orderDetails.shipping.zip}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {orderDetails.shipping.country}
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <IconTruck className="h-5 w-5 text-gray-400" />
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{orderDetails.shipping.method}</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">Tracking: {orderDetails.shipping.tracking}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {orderDetails.shipping.method}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  Tracking: {orderDetails.shipping.tracking}
+                </p>
               </div>
             </div>
           </div>
@@ -238,18 +372,26 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
           transition={{ delay: 0.6 }}
           className="rounded-lg border border-gray-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800"
         >
-          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Payment Information</h2>
+          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+            Payment Information
+          </h2>
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <IconCreditCard className="h-5 w-5 text-gray-400" />
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {orderDetails.payment.method} ending in {orderDetails.payment.last4}
+                  {orderDetails.payment.method} ending in{" "}
+                  {orderDetails.payment.last4}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Status: <span className="text-green-600 dark:text-green-400">{orderDetails.payment.status}</span>
+                  Status:{" "}
+                  <span className="text-green-600 dark:text-green-400">
+                    {orderDetails.payment.status}
+                  </span>
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Date: {orderDetails.payment.date}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Date: {orderDetails.payment.date}
+                </p>
               </div>
             </div>
           </div>
@@ -263,22 +405,32 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
         transition={{ delay: 0.7 }}
         className="rounded-lg border border-gray-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800"
       >
-        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Order Summary</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Order Summary
+        </h2>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Subtotal</span>
-            <span className="text-gray-900 dark:text-white">${orderDetails.summary.subtotal.toFixed(2)}</span>
+            <span className="text-gray-900 dark:text-white">
+              ${orderDetails.summary.subtotal.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Tax</span>
-            <span className="text-gray-900 dark:text-white">${orderDetails.summary.tax.toFixed(2)}</span>
+            <span className="text-gray-900 dark:text-white">
+              ${orderDetails.summary.tax.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Shipping</span>
-            <span className="text-gray-900 dark:text-white">${orderDetails.summary.shipping.toFixed(2)}</span>
+            <span className="text-gray-900 dark:text-white">
+              ${orderDetails.summary.shipping.toFixed(2)}
+            </span>
           </div>
           <div className="mt-4 flex justify-between border-t border-gray-200 pt-4 dark:border-neutral-700">
-            <span className="text-base font-medium text-gray-900 dark:text-white">Total</span>
+            <span className="text-base font-medium text-gray-900 dark:text-white">
+              Total
+            </span>
             <span className="text-base font-medium text-gray-900 dark:text-white">
               ${orderDetails.summary.total.toFixed(2)}
             </span>
@@ -287,4 +439,4 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
       </motion.div>
     </div>
   );
-} 
+}

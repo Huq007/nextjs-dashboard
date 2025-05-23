@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   IconGauge,
   IconTrendingUp,
@@ -22,9 +22,24 @@ import {
 
 // Dummy data for demonstration
 const analyticsData = [
-  { title: "Total Revenue", value: "$1,545,890", trend: "+12.5%", icon: IconCurrencyDollar },
-  { title: "Total Orders", value: "8,230", trend: "+8.1%", icon: IconTrendingUp },
-  { title: "Average Order Value", value: "$187.84", trend: "+3.2%", icon: IconGauge },
+  {
+    title: "Total Revenue",
+    value: "$1,545,890",
+    trend: "+12.5%",
+    icon: IconCurrencyDollar,
+  },
+  {
+    title: "Total Orders",
+    value: "8,230",
+    trend: "+8.1%",
+    icon: IconTrendingUp,
+  },
+  {
+    title: "Average Order Value",
+    value: "$187.84",
+    trend: "+3.2%",
+    icon: IconGauge,
+  },
   { title: "Items Sold", value: "25,120", trend: "+10.9%", icon: IconPackage },
 ];
 
@@ -51,7 +66,9 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Analytics
+        </h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           View your business analytics and performance metrics
         </p>
@@ -164,4 +181,4 @@ export default function AnalyticsPage() {
       </div>
     </div>
   );
-} 
+}

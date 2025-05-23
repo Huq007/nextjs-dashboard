@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   IconDownload,
   IconReportAnalytics,
@@ -10,11 +10,36 @@ import {
 
 // Dummy data for demonstration
 const reports = [
-  { id: "REP-001", name: "Monthly Sales Summary", type: "Sales", date: "2024-03-31" },
-  { id: "REP-002", name: "Inventory Stock Levels", type: "Inventory", date: "2024-03-30" },
-  { id: "REP-003", name: "Purchase Order History", type: "Purchasing", date: "2024-03-29" },
-  { id: "REP-004", name: "Customer Activity Report", type: "Customers", date: "2024-03-28" },
-  { id: "REP-005", name: "Warehouse Inventory Valuation", type: "Inventory", date: "2024-03-27" },
+  {
+    id: "REP-001",
+    name: "Monthly Sales Summary",
+    type: "Sales",
+    date: "2024-03-31",
+  },
+  {
+    id: "REP-002",
+    name: "Inventory Stock Levels",
+    type: "Inventory",
+    date: "2024-03-30",
+  },
+  {
+    id: "REP-003",
+    name: "Purchase Order History",
+    type: "Purchasing",
+    date: "2024-03-29",
+  },
+  {
+    id: "REP-004",
+    name: "Customer Activity Report",
+    type: "Customers",
+    date: "2024-03-28",
+  },
+  {
+    id: "REP-005",
+    name: "Warehouse Inventory Valuation",
+    type: "Inventory",
+    date: "2024-03-27",
+  },
 ];
 
 export default function ReportsPage() {
@@ -22,7 +47,9 @@ export default function ReportsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reports</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Reports
+          </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Generate and view various reports for your inventory system
           </p>
@@ -105,4 +132,4 @@ export default function ReportsPage() {
       </div>
     </div>
   );
-} 
+}

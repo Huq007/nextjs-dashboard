@@ -127,7 +127,7 @@ export function SupplierForm({ onSubmit, onCancel }: SupplierFormProps) {
         <Label htmlFor="status">Status</Label>
         <Select
           value={formData.status}
-          onValueChange={(value) => setFormData({ ...formData, status: value })}
+          onValueChange={(value: string) => setFormData({ ...formData, status: value })}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select status" />

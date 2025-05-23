@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface WarehouseFormProps {
   onSubmit: (data: FormData) => void;
@@ -25,14 +31,14 @@ interface FormData {
 
 export function WarehouseForm({ onSubmit, onCancel }: WarehouseFormProps) {
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    location: '',
-    address: '',
-    city: '',
-    country: '',
+    name: "",
+    location: "",
+    address: "",
+    city: "",
+    country: "",
     capacity: 0,
-    manager: '',
-    status: 'active',
+    manager: "",
+    status: "active",
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,7 +47,9 @@ export function WarehouseForm({ onSubmit, onCancel }: WarehouseFormProps) {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -127,7 +135,7 @@ export function WarehouseForm({ onSubmit, onCancel }: WarehouseFormProps) {
         <Label htmlFor="status">Status</Label>
         <Select
           value={formData.status}
-          onValueChange={(value) => setFormData({ ...formData, status: value })}
+          // onValueChange={(value) => setFormData({ ...formData, status: value })}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select status" />
@@ -148,4 +156,4 @@ export function WarehouseForm({ onSubmit, onCancel }: WarehouseFormProps) {
       </div>
     </form>
   );
-} 
+}
