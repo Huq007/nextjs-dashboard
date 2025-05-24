@@ -1,28 +1,30 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./providers";
+import { AuthProvider } from "./context/AuthContext";
 
 const montserrat = Montserrat({ 
   subsets: ["latin"],
-  display: "swap",
-  variable: "--font-montserrat",
+  display: 'swap',
+  variable: '--font-montserrat',
 });
 
 export const metadata: Metadata = {
-  title: "Inventory Pro - Enterprise Management System",
-  description: "A modern inventory management system for enterprises",
+  title: "Inventory Management System",
+  description: "A modern inventory management system",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning className={montserrat.variable}>
+    <html lang="en" className={montserrat.variable}>
       <body className="font-montserrat">
-        <ThemeProvider>{children}</ThemeProvider>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

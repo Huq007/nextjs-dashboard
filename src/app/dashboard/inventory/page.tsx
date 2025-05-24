@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   IconSearch,
   IconPlus,
@@ -13,187 +13,9 @@ import {
   IconMenu2,
 } from "@tabler/icons-react";
 import Image from 'next/image';
-
-// Add interfaces for type safety
-interface InventoryItem {
-  id: string;
-  name: string;
-  sku: string;
-  category: string;
-  stock: number;
-  price: number;
-  status: "In Stock" | "Low Stock" | "Out of Stock";
-  image: string;
-}
-
-// Dummy data for demonstration
-const inventoryItems: InventoryItem[] = [
-  {
-    id: "INV-001",
-    name: "Laptop Pro 15",
-    sku: "LP-15-2023",
-    category: "Electronics",
-    stock: 150,
-    price: 1200.00,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wfGVufDB8fDB8fHww",
-  },
-  {
-    id: "INV-002",
-    name: "Mechanical Keyboard",
-    sku: "MK-RED-SWITCH",
-    category: "Accessories",
-    stock: 75,
-    price: 85.00,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a2V5Ym9hcmR8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    id: "INV-003",
-    name: "Wireless Mouse",
-    sku: "WM-ERG-101",
-    category: "Accessories",
-    stock: 0,
-    price: 25.00,
-    status: "Out of Stock",
-    image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW91c2V8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    id: "INV-004",
-    name: "External SSD 1TB",
-    sku: "SSD-EXT-1TB",
-    category: "Storage",
-    stock: 200,
-    price: 95.00,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3NkJTIwZHJpdmV8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    id: "INV-005",
-    name: "Monitor 27 inch",
-    sku: "MON-27-4K",
-    category: "Electronics",
-    stock: 30,
-    price: 350.00,
-    status: "Low Stock",
-    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW9uaXRvcnxlbnwwfHwwfHx8MA%3D%3D",
-  },
-  // New Electronics Items
-  {
-    id: "INV-006",
-    name: "Gaming PC Pro",
-    sku: "PC-GAMING-2024",
-    category: "Electronics",
-    stock: 15,
-    price: 2499.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaW5nJTIwcGN8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    id: "INV-007",
-    name: "Smart TV 55\"",
-    sku: "TV-55-4K",
-    category: "Electronics",
-    stock: 8,
-    price: 899.99,
-    status: "Low Stock",
-    image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnQlMjB0dnxlbnwwfHwwfHx8MA%3D%3D",
-  },
-  {
-    id: "INV-008",
-    name: "Wireless Earbuds Pro",
-    sku: "WB-PRO-2024",
-    category: "Electronics",
-    stock: 45,
-    price: 199.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D",
-  },
-  // New Accessories Items
-  {
-    id: "INV-009",
-    name: "Gaming Mouse RGB",
-    sku: "GM-RGB-2024",
-    category: "Accessories",
-    stock: 25,
-    price: 79.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaW5nJTIwbW91c2V8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    id: "INV-010",
-    name: "USB-C Hub",
-    sku: "USB-HUB-2024",
-    category: "Accessories",
-    stock: 50,
-    price: 49.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNiJTIwaHVifGVufDB8fDB8fHww",
-  },
-  // New Storage Items
-  {
-    id: "INV-011",
-    name: "NAS Drive 8TB",
-    sku: "NAS-8TB-2024",
-    category: "Storage",
-    stock: 10,
-    price: 299.99,
-    status: "Low Stock",
-    image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bmFzJTIwZHJpdmV8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    id: "INV-012",
-    name: "SD Card 512GB",
-    sku: "SD-512-2024",
-    category: "Storage",
-    stock: 30,
-    price: 89.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2QlMjBjYXJkfGVufDB8fDB8fHww",
-  },
-  // New Audio Items
-  {
-    id: "INV-013",
-    name: "Studio Headphones",
-    sku: "HP-STUDIO-2024",
-    category: "Audio",
-    stock: 15,
-    price: 249.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D",
-  },
-  {
-    id: "INV-014",
-    name: "Bluetooth Speaker",
-    sku: "SP-BT-2024",
-    category: "Audio",
-    stock: 20,
-    price: 129.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Ymx1ZXRvb3RoJTIwc3BlYWtlcnxlbnwwfHwwfHx8MA%3D%3D",
-  },
-  // New Video Items
-  {
-    id: "INV-015",
-    name: "4K Webcam",
-    sku: "WC-4K-2024",
-    category: "Video",
-    stock: 12,
-    price: 149.99,
-    status: "In Stock",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2ViY2FtfGVufDB8fDB8fHww",
-  },
-  {
-    id: "INV-016",
-    name: "Action Camera",
-    sku: "AC-4K-2024",
-    category: "Video",
-    stock: 8,
-    price: 299.99,
-    status: "Low Stock",
-    image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YWN0aW9uJTIwY2FtZXJhfGVufDB8fDB8fHww",
-  }
-];
+import { getInventory, InventoryItem } from '../../services/inventory';
+import { useAuth } from '../../context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 // Slide Drawer Component
 function SlideDrawer({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
@@ -265,12 +87,15 @@ function SlideDrawer({ isOpen, onClose, children }: { isOpen: boolean; onClose: 
 // Add Item Modal Component
 function AddItemModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [formData, setFormData] = useState({
-    name: "",
+    product_name: "",
     sku: "",
     category: "",
-    stock: "",
-    price: "",
-    image: "",
+    quantity: "",
+    unit_price: "",
+    supplier: "",
+    location: "",
+    min_stock_level: "",
+    description: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -297,12 +122,12 @@ function AddItemModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Item Name
+              Product Name
             </label>
             <input
               type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formData.product_name}
+              onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
               required
             />
@@ -338,39 +163,72 @@ function AddItemModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Stock
+              Quantity
             </label>
             <input
               type="number"
-              value={formData.stock}
-              onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+              value={formData.quantity}
+              onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
               required
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Price
+              Unit Price
             </label>
             <input
               type="number"
               step="0.01"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              value={formData.unit_price}
+              onChange={(e) => setFormData({ ...formData, unit_price: e.target.value })}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
               required
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Image URL
+              Supplier
             </label>
             <input
-              type="url"
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+              type="text"
+              value={formData.supplier}
+              onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Location
+            </label>
+            <input
+              type="text"
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Min Stock Level
+            </label>
+            <input
+              type="number"
+              value={formData.min_stock_level}
+              onChange={(e) => setFormData({ ...formData, min_stock_level: e.target.value })}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
               required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+              rows={3}
             />
           </div>
           <div className="flex justify-end space-x-3">
@@ -395,17 +253,59 @@ function AddItemModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 }
 
 export default function InventoryPage() {
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { token, setToken } = useAuth();
+  const router = useRouter();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        if (!token) {
+          console.log('No token available');
+          router.push('/login');
+          return;
+        }
+
+        // Clear any existing error
+        setError(null);
+        
+        console.log('Using token:', token);
+        const data = await getInventory(token);
+        setInventory(data);
+      } catch (err) {
+        console.error('Error details:', err);
+        if (err instanceof Error) {
+          if (err.message.includes('Authentication failed') || err.message.includes('Invalid token')) {
+            // Clear the invalid token
+            setToken(null);
+            localStorage.removeItem('token');
+            router.push('/login');
+          } else {
+            setError(err.message);
+          }
+        } else {
+          setError('Failed to fetch inventory');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInventory();
+  }, [token, router, setToken]);
+
   // Calculate pagination
-  const totalPages = Math.ceil(inventoryItems.length / itemsPerPage);
+  const totalPages = Math.ceil(inventory.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = inventoryItems.slice(startIndex, endIndex);
+  const currentItems = inventory.slice(startIndex, endIndex);
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
@@ -446,6 +346,22 @@ export default function InventoryPage() {
     setSelectedItem(item);
     setIsDrawerOpen(true);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -545,7 +461,7 @@ export default function InventoryPage() {
                       <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
                         <Image
                           src={item.image}
-                          alt={item.name}
+                          alt={item.product_name}
                           width={48}
                           height={48}
                           className="h-full w-full object-cover"
@@ -553,10 +469,10 @@ export default function InventoryPage() {
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {item.name}
+                          {item.product_name}
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {item.id}
+                          {item.sku}
                         </div>
                       </div>
                     </div>
@@ -571,10 +487,10 @@ export default function InventoryPage() {
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    {item.stock}
+                    {item.quantity}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    ${item.price.toFixed(2)}
+                    ${item.unit_price.toFixed(2)}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm">
                     <span
@@ -637,9 +553,9 @@ export default function InventoryPage() {
             <p className="text-sm text-gray-700 dark:text-gray-300">
               Showing <span className="font-medium">{startIndex + 1}</span> to{" "}
               <span className="font-medium">
-                {Math.min(endIndex, inventoryItems.length)}
+                {Math.min(endIndex, inventory.length)}
               </span>{" "}
-              of <span className="font-medium">{inventoryItems.length}</span> results
+              of <span className="font-medium">{inventory.length}</span> results
             </p>
           </div>
           <div>
@@ -694,7 +610,7 @@ export default function InventoryPage() {
             >
               <Image
                 src={selectedItem.image}
-                alt={selectedItem.name}
+                alt={selectedItem.product_name}
                 width={400}
                 height={400}
                 className="h-64 w-full object-cover"
@@ -707,7 +623,7 @@ export default function InventoryPage() {
                   transition={{ delay: 0.4 }}
                   className="text-2xl font-bold text-white"
                 >
-                  {selectedItem.name}
+                  {selectedItem.product_name}
                 </motion.h3>
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
@@ -715,7 +631,7 @@ export default function InventoryPage() {
                   transition={{ delay: 0.5 }}
                   className="mt-1 text-sm text-gray-200"
                 >
-                  {selectedItem.id}
+                  {selectedItem.sku}
                 </motion.p>
               </div>
             </motion.div>
@@ -725,8 +641,12 @@ export default function InventoryPage() {
               {[
                 { label: "SKU", value: selectedItem.sku },
                 { label: "Category", value: selectedItem.category },
-                { label: "Stock", value: selectedItem.stock },
-                { label: "Price", value: `$${selectedItem.price.toFixed(2)}` },
+                { label: "Stock", value: selectedItem.quantity },
+                { label: "Price", value: `$${selectedItem.unit_price.toFixed(2)}` },
+                { label: "Supplier", value: selectedItem.supplier || 'N/A' },
+                { label: "Location", value: selectedItem.location || 'N/A' },
+                { label: "Min Stock Level", value: selectedItem.min_stock_level },
+                { label: "Description", value: selectedItem.description || 'No description available' },
               ].map((item, index) => (
                 <motion.div
                   key={item.label}
